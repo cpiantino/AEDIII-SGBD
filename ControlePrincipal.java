@@ -227,23 +227,15 @@ public class ControlePrincipal {
    public static void incluirProjeto() throws Exception {
        
        String nome;
-       String[] colS;
-       int[] colaboradores;
        
        System.out.println("\nINCLUSÃO");
        System.out.print("Nome: ");
        nome = console.nextLine();
-       System.out.print("Colaboradores (códigos separado por espaços: ");
-       colS = console.nextLine().split("[ ]+");
-       colaboradores = new int[colS.length];
-       for (int i=0; i<colS.length; i++) {
-           colaboradores[i] = Integer.parseInt(colS[i]);
-       }
        
        System.out.print("\nConfirma inclusão? ");
        char confirma = console.nextLine().charAt(0);
        if(confirma=='s' || confirma=='S') {
-           Projeto l = new Projeto(-1, nome, colaboradores);
+           Projeto l = new Projeto(-1, nome);
            int cod = arquivoProjetos.incluir(l);
            System.out.println("Projeto incluído com código: "+cod);
        }

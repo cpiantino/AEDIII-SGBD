@@ -33,7 +33,7 @@ public class Tarefa implements Registro{
 			this.prioridade = p;
 			this.vencimento = v;
 		}else{
-			throw new Exception("Código inválido");
+			throw new Exception("\nCódigo inválido");
 		}
 	}
 	
