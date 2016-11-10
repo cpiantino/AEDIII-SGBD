@@ -46,6 +46,7 @@ public class Projeto implements Registro {
         for (int i = 0; i<colaboradores.length; i++) {
             saida.writeInt(colaboradores[i]);
         }
+        
         byte[] buffer = registro.toByteArray();
         
         short tamanho = (short)buffer.length;
