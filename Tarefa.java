@@ -5,15 +5,19 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Calendar;
 
 public class Tarefa implements Registro{
 	private int cod;
-	private String desc;
-	private int codProjeto;
-	private int codColaborador;
-	private String vencimento;
-	private short prioridade;
+	public String desc;
+	public int codProjeto;
+	public int codColaborador;
+	public Calendar vencimento;
+	public short prioridade;
 	
 	Tarefa(){
 		this.cod = 0;
@@ -21,7 +25,7 @@ public class Tarefa implements Registro{
 		this.codProjeto = 0;
 		this.desc = "";
 		this.prioridade = -1;
-		this.vencimento = "";
+		this.vencimento = Calendar.getInstance();
 	}
 	
 	Tarefa(int c, String d, int cP, int cC, String v, short p, ArquivoIndexado arqP, ArquivoIndexado arqC) throws Exception{
@@ -31,7 +35,9 @@ public class Tarefa implements Registro{
 			this.codProjeto = cP;		
 			this.desc = d;
 			this.prioridade = p;
-			this.vencimento = v;
+            DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            this.vencimento = Calendar.getInstance();
+            this.vencimento.setTime(sdf.parse(v));
 		}else{
 			throw new Exception("\nCódigo inválido");
 		}
@@ -52,12 +58,12 @@ public class Tarefa implements Registro{
 	public void writeRegistroIndicadorTamanho(RandomAccessFile arq) throws IOException{
 		ByteArrayOutputStream registro = new ByteArrayOutputStream();
         DataOutputStream saida = new DataOutputStream( registro );
-        
+
         saida.writeInt(cod);
         saida.writeUTF(desc);
         saida.writeInt(codProjeto);
         saida.writeInt(codColaborador);
-        saida.writeUTF(vencimento);
+        saida.writeLong(vencimento.getTimeInMillis());
         saida.writeShort(prioridade);
 
         byte[] buffer = registro.toByteArray();
@@ -68,6 +74,7 @@ public class Tarefa implements Registro{
 	}
     public void readRegistroIndicadorTamanho(RandomAccessFile arq) throws IOException, ClassNotFoundException{
     	short tamanho = arq.readShort();
+    	Long v;
         byte[] ba = new byte[tamanho];
         if(arq.read(ba) != tamanho) throw new IOException("Dados inconsistentes");
         
@@ -77,7 +84,8 @@ public class Tarefa implements Registro{
         this.desc = entrada.readUTF();
         this.codProjeto = entrada.readInt();
         this.codColaborador = entrada.readInt();
-        this.vencimento = entrada.readUTF();
+        v = entrada.readLong();
+        this.vencimento.setTimeInMillis(v);
         this.prioridade = entrada.readShort();
     }
     public void writeRegistroIndicadorTamanho(DataOutputStream arq) throws IOException{
@@ -99,7 +107,7 @@ public class Tarefa implements Registro{
                 "\nDescrição............:" + desc +
                 "\nProjeto (código).....:" + codProjeto +
                 "\nColaborador (código).:" + codColaborador +
-                "\nData de validade.....:" + vencimento +
+                "\nData de validade.....:" + vencimento.get(vencimento.DATE) +"/"+ (vencimento.get(vencimento.MONTH)+1) +"/"+ vencimento.get(vencimento.YEAR) +
                 "\nPrioridade...........:" + prioridade;
 
     }

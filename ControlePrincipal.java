@@ -1,5 +1,8 @@
 package aed3;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class ControlePrincipal {
@@ -68,8 +71,8 @@ public class ControlePrincipal {
                    case 15: relatorioTarefasProjeto(); break; //Rel Projeto por tarefa
                    case 16: listarTarefa(); break;
                    case 17: incluirTarefa(); break; //Incluir tarefa
-                   case 18: alterarTarefa(); //Alterar tarefa
-                   case 19: excluirTarefa(); //Excluir tarefa
+                   case 18: alterarTarefa(); break; //Alterar tarefa
+                   case 19: excluirTarefa(); break;//Excluir tarefa
                    case 98: reorganizar(); break;
                    case 99: povoar(); break;
                    case 0: break;
@@ -382,7 +385,7 @@ public class ControlePrincipal {
     		   arvoreTarefas.inserir(codProjeto,codColaborador);
     		   System.out.println("Tarefa incluída com código: "+cod);
     	   }catch(Exception e){
-    		   System.out.println(e.getMessage());
+    		   e.printStackTrace();
     	   }
        }
    }
@@ -413,10 +416,12 @@ public class ControlePrincipal {
             codProjeto = console.nextInt();
             System.out.print("\nNovo colaborador responsável: ");
             codColaborador = console.nextInt();
+            console.nextLine();
             System.out.print("\nNova data de vencimento: ");
             vencimento = console.nextLine();
             System.out.print("\nNova prioridade: ");
             prioridade = console.nextShort();
+            console.nextLine();
             System.out.print("\nConfirma alteração? ");
             char confirma = console.nextLine().charAt(0);
             if(confirma=='s' || confirma=='S') {
@@ -424,7 +429,10 @@ public class ControlePrincipal {
                 l.desc = (desc.length()>0?desc:l.desc);
                 l.codProjeto = (codProjeto>0?codProjeto:l.codProjeto);
                 l.codColaborador = (codColaborador>0?codColaborador:l.codColaborador);
-                l.vencimento = (vencimento.length()==10?vencimento:l.vencimento);
+                DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(sdf.parse(vencimento));
+                l.vencimento = cal;
                 l.prioridade = ((0<=prioridade&&prioridade<=3)?prioridade:l.prioridade);
 
                 if( arquivoTarefas.alterar(l) )
