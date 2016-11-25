@@ -11,7 +11,8 @@ public class ControlePrincipal {
     private static ArquivoIndexado<Colaborador> arquivoColaboradores;
     private static ArquivoIndexado<Projeto> arquivoProjetos;
     private static ArquivoIndexado<Tarefa> arquivoTarefas;
-    private static ArvoreBMais arvoreTarefas;
+    private static ArvoreBMais arvoreProjetoTarefas;
+    private static ArvoreBMais arvoreColaboradorTarefas;
 
    public static void main(String[] args) {
        
@@ -19,7 +20,8 @@ public class ControlePrincipal {
            arquivoColaboradores = new ArquivoIndexado<>(Colaborador.class, "Colaboradores.db", "Colaboradores1.idx", "Colaboradores2.idx");
            arquivoProjetos = new ArquivoIndexado<>(Projeto.class, "Projetos.db", "Projetos1.idx", "Projetos2.idx");
            arquivoTarefas = new ArquivoIndexado<>(Tarefa.class, "Tarefas.db", "Tarefas1.idx", "Tarefas2.idx");
-           arvoreTarefas = new ArvoreBMais(1,"Tarefas.rel");
+           arvoreProjetoTarefas = new ArvoreBMais(1,"ProjetoTarefas.idx");
+           arvoreColaboradorTarefas = new ArvoreBMais(1, "ColaboradorTarefas.idx");
 
            // menu
            int opcao;
@@ -40,7 +42,7 @@ public class ControlePrincipal {
                System.out.println("12 Projeto - Excluir");
                System.out.println("13 Projeto - Busca por código");
                System.out.println("14 Projeto - Busca por nome");
-               System.out.println("15 Projeto - Rel por tarefa");
+               System.out.println("15 Projeto - Rel de tarefas");
                System.out.println("");
                System.out.println("16 Tarefa - Listar");
                System.out.println("17 Tarefa - Incluir");
@@ -382,7 +384,8 @@ public class ControlePrincipal {
     	   try{
     		   Tarefa l = new Tarefa(-1, descricao, codProjeto, codColaborador, vencimento, prioridade, arquivoProjetos, arquivoColaboradores);
     		   int cod = arquivoTarefas.incluir(l);
-    		   arvoreTarefas.inserir(codProjeto,codColaborador);
+    		   arvoreProjetoTarefas.inserir(codProjeto,cod);
+                   arvoreColaboradorTarefas.inserir(codColaborador, cod);
     		   System.out.println("Tarefa incluída com código: "+cod);
     	   }catch(Exception e){
     		   e.printStackTrace();
@@ -465,7 +468,7 @@ public class ControlePrincipal {
             char confirma = console.nextLine().charAt(0);
             if(confirma=='s' || confirma=='S') {
                 if( arquivoTarefas.excluir(codigo) ) {
-                    arvoreTarefas.excluir(l.codProjeto,l.codColaborador);
+                    arvoreProjetoTarefas.excluir(l.codProjeto,l.codColaborador);
                     System.out.println("Tarefa excluída.");
                 }
             }
@@ -476,22 +479,25 @@ public class ControlePrincipal {
     }
    
    public static void relatorioTarefasProjeto()throws Exception{
-	   int cod;
-	   int [] lista = null;
+	   int codigoProjeto;
+	   int [] listaTarefas = null;
 	   
 	   System.out.println("\nRELATÓRIO DE TAREFAS");
-	   System.out.println("Projeto (código): ");
-	   cod = console.nextInt();
+	   System.out.print("Projeto (código): ");
+	   codigoProjeto = console.nextInt();
 	   console.nextLine();
 
-       if (arquivoTarefas.buscarCodigo(cod) != null) {
-           lista = arvoreTarefas.lista(cod);
+       if (arquivoTarefas.buscarCodigo(codigoProjeto) != null) {
+           listaTarefas = arvoreProjetoTarefas.lista(codigoProjeto);
 
            System.out.print("\nPROJETO:");
-           System.out.println(arquivoProjetos.buscarCodigo(cod));
-           System.out.print("\n\nCOLABORADORES:");
-           for(int x=0;x<lista.length;x++){
-               System.out.println(arquivoColaboradores.buscarCodigo(lista[x]));
+           System.out.println(arquivoProjetos.buscarCodigo(codigoProjeto));
+           System.out.println("\n\nTAREFAS:");
+           for(int x=0;x<listaTarefas.length;x++){
+               Tarefa tarefa = (Tarefa) arquivoTarefas.buscarCodigo(listaTarefas[x]);
+               Colaborador colaborador = (Colaborador) arquivoColaboradores.buscarCodigo(tarefa.codColaborador);
+               System.out.println("Nome do Reponsável: "+colaborador.nome);
+               System.out.println(tarefa);
            }
        }else {
            System.out.println("Nao foi possível realizar o relatório");

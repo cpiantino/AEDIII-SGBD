@@ -30,16 +30,18 @@ public class Tarefa implements Registro{
 	
 	Tarefa(int c, String d, int cP, int cC, String v, short p, ArquivoIndexado arqP, ArquivoIndexado arqC) throws Exception{
 		if(arqP.buscarCodigo(cP) != null && arqC.buscarCodigo(cC) != null){
-			this.cod = c;
-			this.codColaborador = cC;
-			this.codProjeto = cP;		
-			this.desc = d;
-			this.prioridade = p;
-            DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            this.vencimento = Calendar.getInstance();
-            this.vencimento.setTime(sdf.parse(v));
+                    this.cod = c;
+                    this.codColaborador = cC;
+                    this.codProjeto = cP;		
+                    this.desc = d;
+                    this.prioridade = p;
+                    DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    this.vencimento = Calendar.getInstance();
+                    this.vencimento.setTime(sdf.parse(v));
 		}else{
-			throw new Exception("\nCódigo inválido");
+                    String exceptionStringProjeto = arqP.buscarCodigo(cP) == null ? "(Projeto)" : "";
+                    String exceptionStringColaborador = arqP.buscarCodigo(cP) == null ? "(Colaborador)" : "";
+                    throw new Exception("\nCódigo "+exceptionStringProjeto+exceptionStringColaborador+" inválido");
 		}
 	}
 	
@@ -103,7 +105,7 @@ public class Tarefa implements Registro{
     }
     
     public String toString() {
-        return "\nCódigo...............:" + cod +
+        return  "Código...............:" + cod +
                 "\nDescrição............:" + desc +
                 "\nProjeto (código).....:" + codProjeto +
                 "\nColaborador (código).:" + codColaborador +
