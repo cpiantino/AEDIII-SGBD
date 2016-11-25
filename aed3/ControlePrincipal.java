@@ -510,7 +510,8 @@ public class ControlePrincipal {
                Tarefa tarefa = (Tarefa) arquivoTarefas.buscarCodigo(listaTarefas[x]);
                Colaborador colaborador = (Colaborador) arquivoColaboradores.buscarCodigo(tarefa.codColaborador);
                String nome = colaborador==null? "(!)Excluido(!)" : colaborador.nome;
-               System.out.println("Nome do Reponsável: "+nome);
+               int codigo = colaborador==null? -1 : colaborador.codigo;
+               System.out.println("Nome do Reponsável: "+nome+" (Cod:"+codigo+")");
                System.out.println(tarefa);
            }
        }else {
