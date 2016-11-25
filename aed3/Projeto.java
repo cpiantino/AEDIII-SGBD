@@ -27,7 +27,8 @@ public class Projeto implements Registro {
     }
     
     public String toString() {
-        return "Código.......:" + codigo +
+        return "-----------Projeto-----------" +
+               "\nCódigo.......:" + codigo +
                "\nNome.........:" + nome +
                "\n";
     }

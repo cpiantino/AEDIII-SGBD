@@ -105,7 +105,8 @@ public class Tarefa implements Registro{
     }
     
     public String toString() {
-        return  "Código...............:" + cod +
+        return  "-------------------Tarefa-------------------" +
+                "\nCódigo...............:" + cod +
                 "\nDescrição............:" + desc +
                 "\nProjeto (código).....:" + codProjeto +
                 "\nColaborador (código).:" + codColaborador +

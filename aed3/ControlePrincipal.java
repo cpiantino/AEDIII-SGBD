@@ -2,7 +2,10 @@ package aed3;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class ControlePrincipal {
@@ -62,15 +65,15 @@ public class ControlePrincipal {
                    case 4: excluirColaborador(); break;
                    case 5: buscarColaboradorCodigo(); break;
                    case 6: buscarColaboradorNome(); break;
-                   case 7: break; //Rel por projeto
-                   case 8: break; //Rel por data
+                   case 7: relatorioTarefasDoColaboradorPorProjeto(); break; //Rel por projeto
+                   case 8: relatorioTarefasDoColaboradorPorData(); break; //Rel por data
                    case 9: listarProjeto(); break;
                    case 10: incluirProjeto(); break;
                    case 11: alterarProjeto(); break;
                    case 12: excluirProjeto(); break;
                    case 13: buscarProjetoCodigo(); break;
                    case 14: buscarProjetoNome(); break;
-                   case 15: relatorioTarefasProjeto(); break; //Rel Projeto por tarefa
+                   case 15: relatorioTarefasDoProjeto(); break; //Rel Projeto por tarefa
                    case 16: listarTarefa(); break;
                    case 17: incluirTarefa(); break; //Incluir tarefa
                    case 18: alterarTarefa(); break; //Alterar tarefa
@@ -488,7 +491,7 @@ public class ControlePrincipal {
 
     }
    
-   public static void relatorioTarefasProjeto()throws Exception{
+   public static void relatorioTarefasDoProjeto()throws Exception{
 	   int codigoProjeto;
 	   int [] listaTarefas = null;
 	   
@@ -511,8 +514,80 @@ public class ControlePrincipal {
                System.out.println(tarefa);
            }
        }else {
-           System.out.println("Nao foi possível realizar o relatório");
+           System.out.println("\nProjeto não existe (!)");
        }
+   }
+   
+   public static void relatorioTarefasDoColaboradorPorProjeto()throws Exception{
+	   int codigoColaborador;
+	   int [] listaTarefas = null;
+	   
+	   System.out.println("\nRELATÓRIO DE TAREFAS");
+	   System.out.print("Colaborador (código): ");
+	   codigoColaborador = console.nextInt();
+	   console.nextLine();
+
+       if (arquivoColaboradores.buscarCodigo(codigoColaborador) != null) {
+           listaTarefas = arvoreColaboradorTarefas.lista(codigoColaborador);
+           List<Tarefa> tarefas = new ArrayList<Tarefa>();
+           for (int i=0; i<listaTarefas.length; i++) tarefas.add((Tarefa)arquivoTarefas.buscarCodigo(listaTarefas[i]));
+           
+           Comparator<Tarefa> porProjeto = new Comparator<Tarefa>() {
+               @Override
+               public int compare(Tarefa t1, Tarefa t2) {
+                   if (t1.codProjeto < t2.codProjeto) return -1;
+                   else if (t1.codProjeto > t2.codProjeto) return 1;
+                   else {
+                        if (t1.prioridade > t2.prioridade) return -1;
+                        else if (t1.prioridade < t2.prioridade) return 1;
+                        else {
+                            return t1.vencimento.compareTo(t2.vencimento);
+                        }
+                   }
+               }
+           };
+           tarefas.sort(porProjeto);
+           Colaborador colaborador = (Colaborador)arquivoColaboradores.buscarCodigo(codigoColaborador);
+           System.out.println("Nome: "+colaborador.nome+"\n");
+           for (Tarefa tarefa : tarefas) System.out.println(tarefa);
+        }else {
+            System.out.println("\nColaborador não existe (!)");
+        }
+   }
+   
+   public static void relatorioTarefasDoColaboradorPorData()throws Exception{
+	   int codigoColaborador;
+	   int [] listaTarefas = null;
+	   
+	   System.out.println("\nRELATÓRIO DE TAREFAS");
+	   System.out.print("Colaborador (código): ");
+	   codigoColaborador = console.nextInt();
+	   console.nextLine();
+
+       if (arquivoColaboradores.buscarCodigo(codigoColaborador) != null) {
+           listaTarefas = arvoreColaboradorTarefas.lista(codigoColaborador);
+           List<Tarefa> tarefas = new ArrayList<Tarefa>();
+           for (int i=0; i<listaTarefas.length; i++) tarefas.add((Tarefa)arquivoTarefas.buscarCodigo(listaTarefas[i]));
+           
+           Comparator<Tarefa> porProjeto = new Comparator<Tarefa>() {
+               @Override
+               public int compare(Tarefa t1, Tarefa t2) {
+                   if (t1.vencimento.compareTo(t2.vencimento)<0) return -1;
+                   else if (t1.vencimento.compareTo(t2.vencimento)>0) return 1;
+                   else {
+                       if (t1.prioridade > t2.prioridade) return -1;
+                       else if (t1.prioridade < t2.prioridade) return 1;
+                       else return 0;
+                   }
+               }
+           };
+           tarefas.sort(porProjeto);
+           Colaborador colaborador = (Colaborador)arquivoColaboradores.buscarCodigo(codigoColaborador);
+           System.out.println("Nome: "+colaborador.nome+"\n");
+           for (Tarefa tarefa : tarefas) System.out.println(tarefa);
+        }else {
+            System.out.println("\nColaborador não existe (!)");
+        }
    }
 
    public static void reorganizar() throws Exception {
