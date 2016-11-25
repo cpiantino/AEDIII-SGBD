@@ -55,6 +55,7 @@ public class ControlePrincipal {
                System.out.println("18 Tarefa - Alterar");
                System.out.println("19 Tarefa - Excluir");
                System.out.println("");
+               System.out.println("OTHER");
                System.out.println("98 - Reorganizar arquivoColaboradores");
                System.out.println("99 - Povoar BD");
                System.out.println("0 - Sair");
