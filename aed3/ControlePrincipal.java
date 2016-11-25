@@ -29,7 +29,8 @@ public class ControlePrincipal {
            // menu
            int opcao;
            do {
-               System.out.println("\n\n\nMenu Principal\n");
+               System.out.println("\n\n\n----------Menu Principal----------\n");
+               System.out.println("COLABORADOR");
                System.out.println(" 1 Colaborador - Listar");
                System.out.println(" 2 Colaborador - Incluir");
                System.out.println(" 3 Colaborador - Alterar");
@@ -39,6 +40,7 @@ public class ControlePrincipal {
                System.out.println(" 7 Colaborador - Rel por projeto");
                System.out.println(" 8 Colaborador - Rel por data");
                System.out.println("");
+               System.out.println("PROJETO");
                System.out.println(" 9 Projeto - Listar");
                System.out.println("10 Projeto - Incluir");
                System.out.println("11 Projeto - Alterar");
@@ -47,6 +49,7 @@ public class ControlePrincipal {
                System.out.println("14 Projeto - Busca por nome");
                System.out.println("15 Projeto - Rel de tarefas");
                System.out.println("");
+               System.out.println("TAREFA");
                System.out.println("16 Tarefa - Listar");
                System.out.println("17 Tarefa - Incluir");
                System.out.println("18 Tarefa - Alterar");
