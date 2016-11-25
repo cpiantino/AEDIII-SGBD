@@ -40,7 +40,7 @@ public class Tarefa implements Registro{
                     this.vencimento.setTime(sdf.parse(v));
 		}else{
                     String exceptionStringProjeto = arqP.buscarCodigo(cP) == null ? "(Projeto)" : "";
-                    String exceptionStringColaborador = arqP.buscarCodigo(cP) == null ? "(Colaborador)" : "";
+                    String exceptionStringColaborador = arqC.buscarCodigo(cC) == null ? "(Colaborador)" : "";
                     throw new Exception("\nCódigo "+exceptionStringProjeto+exceptionStringColaborador+" inválido");
 		}
 	}
@@ -110,7 +110,7 @@ public class Tarefa implements Registro{
                 "\nProjeto (código).....:" + codProjeto +
                 "\nColaborador (código).:" + codColaborador +
                 "\nData de validade.....:" + vencimento.get(vencimento.DATE) +"/"+ (vencimento.get(vencimento.MONTH)+1) +"/"+ vencimento.get(vencimento.YEAR) +
-                "\nPrioridade...........:" + prioridade;
-
+                "\nPrioridade...........:" + prioridade +
+                "\n";
     }
 }

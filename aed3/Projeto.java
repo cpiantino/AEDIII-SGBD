@@ -27,8 +27,9 @@ public class Projeto implements Registro {
     }
     
     public String toString() {
-        return "\nCódigo.......:" + codigo +
-               "\nNome.........:" + nome;
+        return "Código.......:" + codigo +
+               "\nNome.........:" + nome +
+               "\n";
     }
     
     public final void writeRegistroIndicadorTamanho(RandomAccessFile arq) throws IOException {

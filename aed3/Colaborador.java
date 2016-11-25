@@ -37,9 +37,10 @@ public class Colaborador implements Registro {
     }
     
     public String toString() {
-        return "\nCódigo.:" + codigo +
+        return  "Código.:" + codigo +
                 "\nNome...:" + nome +
-                "\nE-mail.:" + email;
+                "\nE-mail.:" + email +
+                "\n";
 
     }
     

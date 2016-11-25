@@ -26,7 +26,7 @@ public class ControlePrincipal {
            // menu
            int opcao;
            do {
-               System.out.println("\n\nMenu Principal\n");
+               System.out.println("\n\n\nMenu Principal\n");
                System.out.println(" 1 Colaborador - Listar");
                System.out.println(" 2 Colaborador - Incluir");
                System.out.println(" 3 Colaborador - Alterar");
@@ -95,7 +95,7 @@ public class ControlePrincipal {
        Object[] Colaboradores = arquivoColaboradores.listar();
        
        for(int i=0; i<Colaboradores.length; i++) {
-           System.out.println((Colaborador)Colaboradores[i]);
+           System.out.println("\n"+(Colaborador)Colaboradores[i]);
        }
        
    }
@@ -226,7 +226,7 @@ public class ControlePrincipal {
        Object[] Projetos = arquivoProjetos.listar();
        
        for(int i=0; i<Projetos.length; i++) {
-           System.out.println((Projeto)Projetos[i]);
+           System.out.println("\n"+(Projeto)Projetos[i]);
        }
        
    }
@@ -352,7 +352,7 @@ public class ControlePrincipal {
        Object[] Tarefas = arquivoTarefas.listar();
        
        for(int i=0; i<Tarefas.length; i++) {
-           System.out.println((Tarefa)Tarefas[i]);
+           System.out.println("\n"+(Tarefa)Tarefas[i]);
        }
        
    }
@@ -413,36 +413,45 @@ public class ControlePrincipal {
             String vencimento;
             short prioridade;
 
-            System.out.print("\nNova descrição: ");
+            System.out.print("Nova descrição: ");
             desc = console.nextLine();
-            System.out.print("\nNovo projeto da tarefa: ");
+            System.out.print("Novo projeto da tarefa: ");
             codProjeto = console.nextInt();
-            System.out.print("\nNovo colaborador responsável: ");
+            System.out.print("Novo colaborador responsável: ");
             codColaborador = console.nextInt();
-            console.nextLine();
-            System.out.print("\nNova data de vencimento: ");
+            System.out.print("Nova data de vencimento: ");
             vencimento = console.nextLine();
-            System.out.print("\nNova prioridade: ");
+            console.nextLine();
+            System.out.print("Nova prioridade: ");
             prioridade = console.nextShort();
             console.nextLine();
-            System.out.print("\nConfirma alteração? ");
+            System.out.print("Confirma alteração? ");
             char confirma = console.nextLine().charAt(0);
             if(confirma=='s' || confirma=='S') {
 
                 l.desc = (desc.length()>0?desc:l.desc);
                 l.codProjeto = (codProjeto>0?codProjeto:l.codProjeto);
                 l.codColaborador = (codColaborador>0?codColaborador:l.codColaborador);
-                DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(sdf.parse(vencimento));
-                l.vencimento = cal;
+                l.vencimento = l.vencimento;
+                if (vencimento.length() > 0) {
+                    DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(sdf.parse(vencimento));
+                    l.vencimento = cal;
+                }
                 l.prioridade = ((0<=prioridade&&prioridade<=3)?prioridade:l.prioridade);
 
-                if( arquivoTarefas.alterar(l) )
-
-                    System.out.println("Tarefa alterada.");
-                else
-                    System.out.println("Tarefa não pode ser alterada.");
+                if(arquivoProjetos.buscarCodigo(codProjeto) != null && arquivoColaboradores.buscarCodigo(codColaborador) != null) {
+                    if( arquivoTarefas.alterar(l) )
+                        System.out.println("Tarefa alterada.");
+                    else
+                        System.out.println("Tarefa não pode ser alterada.");
+                }
+                else {
+                    String exceptionStringProjeto = arquivoProjetos.buscarCodigo(codProjeto) == null ? "(Projeto)" : "";
+                    String exceptionStringColaborador = arquivoColaboradores.buscarCodigo(codColaborador) == null ? "(Colaborador)" : "";
+                    System.out.println("\nCódigo "+exceptionStringProjeto+exceptionStringColaborador+" inválido");
+                }
             }
         }
         else
@@ -468,7 +477,8 @@ public class ControlePrincipal {
             char confirma = console.nextLine().charAt(0);
             if(confirma=='s' || confirma=='S') {
                 if( arquivoTarefas.excluir(codigo) ) {
-                    arvoreProjetoTarefas.excluir(l.codProjeto,l.codColaborador);
+                    arvoreProjetoTarefas.excluir(l.codProjeto,l.getCodigo()); 
+                    arvoreColaboradorTarefas.excluir(l.codColaborador, l.getCodigo());
                     System.out.println("Tarefa excluída.");
                 }
             }
@@ -487,16 +497,17 @@ public class ControlePrincipal {
 	   codigoProjeto = console.nextInt();
 	   console.nextLine();
 
-       if (arquivoTarefas.buscarCodigo(codigoProjeto) != null) {
+       if (arquivoProjetos.buscarCodigo(codigoProjeto) != null) {
            listaTarefas = arvoreProjetoTarefas.lista(codigoProjeto);
 
-           System.out.print("\nPROJETO:");
+           System.out.println("\nPROJETO:");
            System.out.println(arquivoProjetos.buscarCodigo(codigoProjeto));
-           System.out.println("\n\nTAREFAS:");
+           System.out.println("TAREFAS:");
            for(int x=0;x<listaTarefas.length;x++){
                Tarefa tarefa = (Tarefa) arquivoTarefas.buscarCodigo(listaTarefas[x]);
                Colaborador colaborador = (Colaborador) arquivoColaboradores.buscarCodigo(tarefa.codColaborador);
-               System.out.println("Nome do Reponsável: "+colaborador.nome);
+               String nome = colaborador==null? "(!)Excluido(!)" : colaborador.nome;
+               System.out.println("Nome do Reponsável: "+nome);
                System.out.println(tarefa);
            }
        }else {
